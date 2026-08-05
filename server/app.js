@@ -26,8 +26,7 @@ const { errorHandler } = require('./middleware/errorMiddleware');
 const { authenticate } = require('./middleware/authMiddleware');
 
 const app = express();
-app.use(helmet());
-app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:5173' }));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
