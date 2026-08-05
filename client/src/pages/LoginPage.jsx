@@ -17,13 +17,19 @@ function LoginPage() {
     setError('');
     setLoading(true);
     try {
-      await login({ email, password, rememberMe });
+      await login({ email: email.trim().toLowerCase(), password, rememberMe });
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid credentials. Please try again.');
+      setError(err.response?.data?.message || 'Invalid credentials. Please verify your email and password.');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleQuickLogin = (demoEmail) => {
+    setEmail(demoEmail);
+    setPassword('VetPass123');
+    setError('');
   };
 
   const field = {
@@ -39,6 +45,13 @@ function LoginPage() {
     fontFamily: 'inherit',
     boxSizing: 'border-box',
   };
+
+  const demoAccounts = [
+    { label: 'Ops Admin', email: 'opsadmin@vetcenter.com' },
+    { label: 'Veterinarian', email: 'vet@vetcenter.com' },
+    { label: 'Manager', email: 'manager@vetcenter.com' },
+    { label: 'Reception', email: 'reception@vetcenter.com' },
+  ];
 
   return (
     <div style={{
@@ -102,9 +115,38 @@ function LoginPage() {
           border: '1px solid rgba(148,163,184,0.16)',
         }}>
           {/* Header */}
-          <div style={{ marginBottom: 32 }}>
+          <div style={{ marginBottom: 24 }}>
             <h2 style={{ fontSize: 24, fontWeight: 800, color: '#0f172a', margin: '0 0 6px' }}>Welcome back</h2>
             <p style={{ fontSize: 14, color: '#64748b', margin: 0 }}>Sign in to your VetOps account</p>
+          </div>
+
+          {/* Quick Preset Selector */}
+          <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 12, padding: '12px 14px', marginBottom: 24 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8 }}>
+              ⚡ Quick Fill Demo Accounts
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {demoAccounts.map((acc) => (
+                <button
+                  key={acc.email}
+                  type="button"
+                  onClick={() => handleQuickLogin(acc.email)}
+                  style={{
+                    background: email === acc.email ? '#2563eb' : '#ffffff',
+                    color: email === acc.email ? '#ffffff' : '#334155',
+                    border: '1px solid #cbd5e1',
+                    borderRadius: 8,
+                    padding: '4px 10px',
+                    fontSize: 12,
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    transition: 'all 0.15s',
+                  }}
+                >
+                  {acc.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Error */}

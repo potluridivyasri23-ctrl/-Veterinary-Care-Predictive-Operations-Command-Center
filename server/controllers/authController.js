@@ -11,7 +11,8 @@ function generateToken(user) {
 async function login(req, res, next) {
   try {
     const data = loginSchema.parse(req.body);
-    const userQuery = await pool.query('SELECT id, email, password, role, name, status FROM users WHERE email = $1', [data.email]);
+    const cleanEmail = data.email.trim().toLowerCase();
+    const userQuery = await pool.query('SELECT id, email, password, role, name, status FROM users WHERE LOWER(email) = $1', [cleanEmail]);
     if (!userQuery.rows.length) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
