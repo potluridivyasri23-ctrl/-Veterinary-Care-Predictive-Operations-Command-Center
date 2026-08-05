@@ -10,26 +10,18 @@ async function run() {
   await pool.query(sql);
 
   const password = await bcrypt.hash('VetPass123', 10);
-  await pool.query('DELETE FROM ai_recommendations');
-  await pool.query('DELETE FROM approvals');
-  await pool.query('DELETE FROM anomalies');
-  await pool.query('DELETE FROM alerts');
-  await pool.query('DELETE FROM bills');
-  await pool.query('DELETE FROM capacity_plans');
-  await pool.query('DELETE FROM configurations');
-  await pool.query('DELETE FROM diagnostics');
-  await pool.query('DELETE FROM medical_records');
-  await pool.query('DELETE FROM notifications');
-  await pool.query('DELETE FROM appointments');
-  await pool.query('DELETE FROM tasks');
-  await pool.query('DELETE FROM forecasts');
-  await pool.query('DELETE FROM risk_scores');
-  await pool.query('DELETE FROM animals');
-  await pool.query('DELETE FROM owners');
-  await pool.query('DELETE FROM users');
-  await pool.query('DELETE FROM reports');
-  await pool.query('DELETE FROM overrides');
-  await pool.query('DELETE FROM audit_logs');
+
+  // Truncate all tables at once, respecting FK order with CASCADE
+  await pool.query(`
+    TRUNCATE TABLE
+      ai_recommendations, approvals, anomalies, alerts,
+      payments, bills, capacity_plans, configurations,
+      diagnostics, treatments, vaccinations, medical_records,
+      notifications, appointments, tasks, forecasts,
+      risk_scores, overrides, audit_logs, reports,
+      animals, owners, users
+    RESTART IDENTITY CASCADE
+  `);
 
   await pool.query(`INSERT INTO users (name, email, password, role, status) VALUES
     ('Ava Operations', 'opsadmin@vetcenter.com', $1, 'Operations Admin', 'active'),
