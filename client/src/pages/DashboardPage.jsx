@@ -101,11 +101,16 @@ function DashboardPage() {
   const [loading, setLoading]     = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const fetchDashboard = () => {
+    setLoading(true);
     api.get('/analytics/dashboard')
       .then((r) => setDashboard(r.data))
       .catch(() => setDashboard(null))
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchDashboard();
   }, []);
 
   if (loading) {
@@ -122,8 +127,24 @@ function DashboardPage() {
     return (
       <div style={{ textAlign: 'center', padding: 60, color: '#94a3b8' }}>
         <div style={{ fontSize: 48, marginBottom: 12 }}>⚠️</div>
-        <div style={{ fontSize: 16, fontWeight: 600 }}>Failed to load dashboard data.</div>
-        <div style={{ fontSize: 13, marginTop: 6 }}>Please check your server connection and try refreshing.</div>
+        <div style={{ fontSize: 16, fontWeight: 600, color: '#1e293b' }}>Failed to load dashboard data.</div>
+        <div style={{ fontSize: 13, marginTop: 6, marginBottom: 20 }}>Please check your server connection or click retry below.</div>
+        <button
+          onClick={fetchDashboard}
+          style={{
+            background: '#2563eb',
+            color: '#fff',
+            border: 'none',
+            borderRadius: 10,
+            padding: '10px 20px',
+            fontSize: 14,
+            fontWeight: 600,
+            cursor: 'pointer',
+            boxShadow: '0 4px 12px rgba(37,99,235,0.25)',
+          }}
+        >
+          🔄 Retry Loading Dashboard
+        </button>
       </div>
     );
   }
