@@ -1,0 +1,58 @@
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
+const animalRoutes = require('./routes/animalRoutes');
+const appointmentRoutes = require('./routes/appointmentRoutes');
+const ownerRoutes = require('./routes/ownerRoutes');
+const billingRoutes = require('./routes/billingRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
+const taskRoutes = require('./routes/taskRoutes');
+const reportRoutes = require('./routes/reportRoutes');
+const analyticsRoutes = require('./routes/analyticsRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
+const medicalRecordRoutes = require('./routes/medicalRecordRoutes');
+const diagnosticRoutes = require('./routes/diagnosticRoutes');
+const treatmentRoutes = require('./routes/treatmentRoutes');
+const vaccinationRoutes = require('./routes/vaccinationRoutes');
+const followupRoutes = require('./routes/followupRoutes');
+const aiRoutes = require('./routes/aiRoutes');
+const auditRoutes = require('./routes/auditRoutes');
+const configRoutes = require('./routes/configRoutes');
+const anomalyRoutes = require('./routes/anomalyRoutes');
+const alertsRoutes = require('./routes/alertsRoutes');
+const { errorHandler } = require('./middleware/errorMiddleware');
+const { authenticate } = require('./middleware/authMiddleware');
+
+const app = express();
+app.use(helmet());
+app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:5173' }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use('/api/auth', authRoutes);
+app.use('/api/users', authenticate, userRoutes);
+app.use('/api/animals', authenticate, animalRoutes);
+app.use('/api/appointments', authenticate, appointmentRoutes);
+app.use('/api/owners', authenticate, ownerRoutes);
+app.use('/api/billing', authenticate, billingRoutes);
+app.use('/api/payments', authenticate, paymentRoutes);
+app.use('/api/tasks', authenticate, taskRoutes);
+app.use('/api/reports', authenticate, reportRoutes);
+app.use('/api/analytics', authenticate, analyticsRoutes);
+app.use('/api/notifications', authenticate, notificationRoutes);
+app.use('/api/alerts', authenticate, alertsRoutes);
+app.use('/api/audit', authenticate, auditRoutes);
+app.use('/api/configurations', authenticate, configRoutes);
+app.use('/api/anomalies', authenticate, anomalyRoutes);
+app.use('/api/medical-records', authenticate, medicalRecordRoutes);
+app.use('/api/diagnostics', authenticate, diagnosticRoutes);
+app.use('/api/treatments', authenticate, treatmentRoutes);
+app.use('/api/vaccinations', authenticate, vaccinationRoutes);
+app.use('/api/follow-ups', authenticate, followupRoutes);
+app.use('/api/ai', authenticate, aiRoutes);
+
+app.use(errorHandler);
+
+module.exports = app;
