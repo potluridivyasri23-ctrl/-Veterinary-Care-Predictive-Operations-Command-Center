@@ -3,6 +3,7 @@ import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Badge } from '@mui/material';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../services/api';
+import { isPathAllowed } from '../utils/rbac';
 
 const navGroups = [
   {
@@ -88,6 +89,12 @@ function Layout() {
   const SIDEBAR_W = sidebarOpen ? 260 : 72;
   const TOPBAR_H  = 60;
 
+  // Filter groups and items based on role permissions
+  const filteredNavGroups = navGroups.map((grp) => ({
+    ...grp,
+    items: grp.items.filter((item) => isPathAllowed(user?.role, item.path))
+  })).filter((grp) => grp.items.length > 0);
+
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', fontFamily: 'Inter, ui-sans-serif, system-ui, sans-serif', background: '#f0f4ff' }}>
 
@@ -124,7 +131,7 @@ function Layout() {
 
         {/* Nav groups */}
         <nav style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', padding: '12px 8px' }} className="scrollable">
-          {navGroups.map((grp) => (
+          {filteredNavGroups.map((grp) => (
             <div key={grp.group} style={{ marginBottom: 8 }}>
               {sidebarOpen && (
                 <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: 10, fontWeight: 700, letterSpacing: 1.2, textTransform: 'uppercase', padding: '8px 10px 4px' }}>
