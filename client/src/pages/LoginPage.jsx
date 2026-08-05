@@ -20,7 +20,11 @@ function LoginPage() {
       await login({ email: email.trim().toLowerCase(), password, rememberMe });
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid credentials. Please verify your email and password.');
+      if (!err.response) {
+        setError('🌐 Connection failed: Cannot reach backend server. Please configure your Render backend URL in Netlify environment variables (VITE_API_URL) or netlify.toml.');
+      } else {
+        setError(err.response?.data?.message || 'Invalid credentials. Please verify your email and password.');
+      }
     } finally {
       setLoading(false);
     }
